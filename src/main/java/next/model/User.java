@@ -1,5 +1,7 @@
 package next.model;
 
+import java.util.Optional;
+
 public class User {
     private String userId;
     private String password;
@@ -66,4 +68,14 @@ public class User {
         return true;
     }
 
+    public boolean isSameUser(User other) {
+        return this.userId.equals(other.userId);
+    }
+
+
+    public void update(User updateUser) {
+        this.password = updateUser.password;
+        this.name = updateUser.name;
+        this.email = updateUser.email;
+    }
 }
