@@ -2,6 +2,7 @@ package next.web;
 
 import core.db.DataBase;
 import next.model.User;
+import next.util.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,16 +22,14 @@ public class UpdateUserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (!isLogin(req)) {
+        HttpSession session = req.getSession();
+        if (!SessionUtil.isLogin(session)) {
             resp.sendRedirect("/user/login");
             return;
         }
 
-        User sessionUser = getSessionUser(req);
         String userId = req.getParameter("userId");
-
-        assert sessionUser != null; // isLogin(req)을 통해 sessionUser != null 보장
-        if (!sessionUser.getUserId().equals(userId)) {
+        if (!SessionUtil.isSessionUser(session, userId)) {
             throw new IllegalStateException("잘못된 접근 입니다.");
         }
 
@@ -42,17 +41,14 @@ public class UpdateUserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (!isLogin(req)) {
+        HttpSession session = req.getSession();
+        if (!SessionUtil.isLogin(session)) {
             resp.sendRedirect("/user/login");
             return;
         }
 
-        User sessionUser = getSessionUser(req);
         String userId = req.getParameter("userId");
-
-
-        assert sessionUser != null; // isLogin(req)을 통해 sessionUser != null 보장
-        if (!sessionUser.getUserId().equals(userId)) {
+        if (!SessionUtil.isSessionUser(session, userId)) {
             throw new IllegalStateException("잘못된 접근 입니다.");
         }
 
@@ -62,20 +58,5 @@ public class UpdateUserServlet extends HttpServlet {
         log.debug("Update User[{}] password={}, name={}, email={}", userId, user.getPassword(), user.getName(), user.getEmail());
 
         resp.sendRedirect("/user/list");
-    }
-
-    private User getSessionUser(HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        Object value = session.getAttribute("user");
-
-        if (value != null) {
-            return (User) value;
-        }
-
-        return null;
-    }
-
-    private boolean isLogin(HttpServletRequest req) {
-        return getSessionUser(req) != null;
     }
 }
