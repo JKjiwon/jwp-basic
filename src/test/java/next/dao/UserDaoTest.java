@@ -1,10 +1,9 @@
 package next.dao;
 
-import static org.junit.Assert.*;
-
+import next.model.User;
 import org.junit.Test;
 
-import next.model.User;
+import static org.junit.Assert.assertEquals;
 
 public class UserDaoTest {
 
