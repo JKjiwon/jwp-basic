@@ -21,17 +21,15 @@ public class UpdateUserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        Object value = session.getAttribute("user");
-
-        if (value == null) {
+        if (!isLogin(req)) {
             resp.sendRedirect("/user/login.jsp");
             return;
         }
 
-        User sessionUser = (User) value;
+        User sessionUser = getSessionUser(req);
         String userId = req.getParameter("userId");
 
+        assert sessionUser != null; // isLogin(req)을 통해 sessionUser != null 보장
         if (!sessionUser.getUserId().equals(userId)) {
             throw new IllegalStateException("잘못된 접근 입니다.");
         }
@@ -44,17 +42,16 @@ public class UpdateUserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        Object value = session.getAttribute("user");
-
-        if (value == null) {
+        if (!isLogin(req)) {
             resp.sendRedirect("/user/login.jsp");
             return;
         }
 
-        User sessionUser = (User) value;
+        User sessionUser = getSessionUser(req);
         String userId = req.getParameter("userId");
 
+
+        assert sessionUser != null; // isLogin(req)을 통해 sessionUser != null 보장
         if (!sessionUser.getUserId().equals(userId)) {
             throw new IllegalStateException("잘못된 접근 입니다.");
         }
@@ -65,5 +62,20 @@ public class UpdateUserServlet extends HttpServlet {
         log.debug("Update User[{}] password={}, name={}, email={}", userId, user.getPassword(), user.getName(), user.getEmail());
 
         resp.sendRedirect("/user/list");
+    }
+
+    private User getSessionUser(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        Object value = session.getAttribute("user");
+
+        if (value != null) {
+            return (User) value;
+        }
+
+        return null;
+    }
+
+    private boolean isLogin(HttpServletRequest req) {
+        return getSessionUser(req) != null;
     }
 }
