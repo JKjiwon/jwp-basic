@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static next.util.UserSessionUtils.USER_SESSION_KEY;
+
 @WebServlet("/user/login")
 public class LoginServlet extends HttpServlet {
 
@@ -36,7 +38,7 @@ public class LoginServlet extends HttpServlet {
         }
 
         HttpSession session = req.getSession();
-        session.setAttribute("user", user);
+        session.setAttribute(USER_SESSION_KEY, user);
         resp.sendRedirect("/");
     }
 }

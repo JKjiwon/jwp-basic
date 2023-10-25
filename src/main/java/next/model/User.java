@@ -71,4 +71,8 @@ public class User {
         this.name = name;
         this.email = email;
     }
+
+    public boolean isSameUser(User other) {
+        return this.userId.equals(other.userId);
+    }
 }

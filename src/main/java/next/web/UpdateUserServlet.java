@@ -2,7 +2,7 @@ package next.web;
 
 import core.db.DataBase;
 import next.model.User;
-import next.util.SessionUtil;
+import next.util.UserSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,17 +23,17 @@ public class UpdateUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        if (!SessionUtil.isLogin(session)) {
+        if (!UserSessionUtils.isLogin(session)) {
             resp.sendRedirect("/user/login");
             return;
         }
 
-        String userId = req.getParameter("userId");
-        if (!SessionUtil.isSessionUser(session, userId)) {
+        User user = DataBase.findUserById(req.getParameter("userId"));
+        if (!UserSessionUtils.isSessionUser(session, user)) {
             throw new IllegalStateException("잘못된 접근 입니다.");
         }
 
-        User user = DataBase.findUserById(userId);
+
         req.setAttribute("user", user);
         RequestDispatcher rd = req.getRequestDispatcher("/user/update_form.jsp");
         rd.forward(req, resp);
@@ -42,20 +42,20 @@ public class UpdateUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        if (!SessionUtil.isLogin(session)) {
+        if (!UserSessionUtils.isLogin(session)) {
             resp.sendRedirect("/user/login");
             return;
         }
 
-        String userId = req.getParameter("userId");
-        if (!SessionUtil.isSessionUser(session, userId)) {
+        User user = DataBase.findUserById(req.getParameter("userId"));
+        if (!UserSessionUtils.isSessionUser(session, user)) {
             throw new IllegalStateException("잘못된 접근 입니다.");
         }
 
-        User user = DataBase.findUserById(userId);
+
         user.update(req.getParameter("password"), req.getParameter("name"), req.getParameter("email"));
         DataBase.updateUser(user);
-        log.debug("Update User[{}] password={}, name={}, email={}", userId, user.getPassword(), user.getName(), user.getEmail());
+        log.debug("Update User[{}] password={}, name={}, email={}", user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
 
         resp.sendRedirect("/user/list");
     }

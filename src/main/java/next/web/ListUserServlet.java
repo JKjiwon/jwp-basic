@@ -1,7 +1,7 @@
 package next.web;
 
 import core.db.DataBase;
-import next.util.SessionUtil;
+import next.util.UserSessionUtils;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,7 +19,7 @@ public class ListUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        if (!SessionUtil.isLogin(session)) {
+        if (!UserSessionUtils.isLogin(session)) {
             resp.sendRedirect("/user/login");
             return;
         }

@@ -4,15 +4,17 @@ import next.model.User;
 
 import javax.servlet.http.HttpSession;
 
-public class SessionUtil {
+public class UserSessionUtils {
 
-    public static boolean isSessionUser(HttpSession session, String userId) {
+    public static final String USER_SESSION_KEY = "user";
+
+    public static boolean isSessionUser(HttpSession session, User user) {
         User sessionUser = getSessionUser(session);
         if (sessionUser == null) {
             return false;
         }
 
-        return sessionUser.getUserId().equals(userId);
+        return sessionUser.isSameUser(user);
     }
 
     public static User getSessionUser(HttpSession session) {
