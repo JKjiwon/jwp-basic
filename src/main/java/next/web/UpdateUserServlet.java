@@ -22,7 +22,7 @@ public class UpdateUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (!isLogin(req)) {
-            resp.sendRedirect("/user/login.jsp");
+            resp.sendRedirect("/user/login");
             return;
         }
 
@@ -43,7 +43,7 @@ public class UpdateUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (!isLogin(req)) {
-            resp.sendRedirect("/user/login.jsp");
+            resp.sendRedirect("/user/login");
             return;
         }
 

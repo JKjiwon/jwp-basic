@@ -19,7 +19,7 @@
     <div class="col-md-12">
         <div class="navbar-header">
 
-            <a href="index.jsp" class="navbar-brand">SLiPP</a>
+            <a href="/" class="navbar-brand">SLiPP</a>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
                 <i class="glyphicon glyphicon-search"></i>
             </button>
@@ -68,11 +68,11 @@
                         <li><a href="/user/update?userId=${user.userId}" role="button">개인정보수정</a></li>
                     </c:when>
                     <c:otherwise>
-                        <li><a href="user/login.jsp" role="button">로그인</a></li>
-                        <li><a href="user/create_form.jsp" role="button">회원가입</a></li>
+                        <li><a href="/user/login" role="button">로그인</a></li>
+                        <li><a href="/user/create" role="button">회원가입</a></li>
                     </c:otherwise>
                 </c:choose>
-                <li class="active"><a href="index.jsp">Posts</a></li>
+                <li class="active"><a href="/">Posts</a></li>
 
             </ul>
         </div>

@@ -5,6 +5,7 @@ import next.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,11 +19,17 @@ public class CreateUserServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(CreateUserServlet.class);
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        RequestDispatcher rd = req.getRequestDispatcher("/user/create_form.jsp");
+        rd.forward(req, resp);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = new User(req.getParameter("userId"), req.getParameter("password"), req.getParameter("name"),
                 req.getParameter("email"));
         log.debug("user : {}", user);
         DataBase.addUser(user);
-        resp.sendRedirect("/user/login.jsp");
+        resp.sendRedirect("/user/login");
     }
 }
