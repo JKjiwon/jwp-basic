@@ -24,6 +24,6 @@ public class UpdateUserController implements Controller {
                 request.getParameter("email"));
         log.debug("Update User : {}", updateUser);
         user.update(updateUser);
-        return "redirect:/";
+        return "redirect:/users";
     }
 }
