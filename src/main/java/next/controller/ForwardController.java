@@ -5,10 +5,16 @@ import core.Controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class LoginFormController implements Controller {
+public class ForwardController implements Controller {
+
+    private String forwardUrl;
+
+    public ForwardController(String forwardUrl) {
+        this.forwardUrl = forwardUrl;
+    }
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return "/user/login.jsp";
+        return forwardUrl;
     }
 }
