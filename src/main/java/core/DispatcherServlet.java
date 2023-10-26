@@ -28,6 +28,8 @@ public class DispatcherServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String uri = req.getRequestURI();
+        log.debug("Method: {}, RequestURI: {}", req.getMethod(), uri);
+
         Controller controller = requestMapping.getController(uri);
         try {
             String viewPath = controller.execute(req, resp);

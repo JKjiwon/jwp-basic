@@ -12,14 +12,14 @@ import java.util.List;
 
 @WebFilter("/*")
 public class ResourceFilter implements Filter {
-    private static final Logger logger = LoggerFactory.getLogger(ResourceFilter.class);
-    private static final List<String> resourcePrefixs = new ArrayList<>();
+    private static final Logger log = LoggerFactory.getLogger(ResourceFilter.class);
+    private static final List<String> resourcePrefixes = new ArrayList<>();
     static {
-        resourcePrefixs.add("/css");
-        resourcePrefixs.add("/js");
-        resourcePrefixs.add("/fonts");
-        resourcePrefixs.add("/images");
-        resourcePrefixs.add("/favicon.ico");
+        resourcePrefixes.add("/css");
+        resourcePrefixes.add("/js");
+        resourcePrefixes.add("/fonts");
+        resourcePrefixes.add("/images");
+        resourcePrefixes.add("/favicon.ico");
     }
 
     private RequestDispatcher defaultRequestDispatcher;
@@ -33,9 +33,11 @@ public class ResourceFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
+
+        log.debug("Method: {}, RequestURI: {}", req.getMethod(), req.getRequestURI());
         String path = req.getRequestURI().substring(req.getContextPath().length());
         if (isResourceUrl(path)) {
-            logger.debug("path : {}", path);
+            log.debug("path : {}", path);
             defaultRequestDispatcher.forward(request, response);
         } else {
             chain.doFilter(request, response);
@@ -43,7 +45,7 @@ public class ResourceFilter implements Filter {
     }
 
     private boolean isResourceUrl(String url) {
-        for (String prefix : resourcePrefixs) {
+        for (String prefix : resourcePrefixes) {
             if (url.startsWith(prefix)) {
                 return true;
             }
