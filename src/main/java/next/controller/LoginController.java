@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
 
 public class LoginController implements Controller {
 
@@ -21,13 +20,7 @@ public class LoginController implements Controller {
         String password = req.getParameter("password");
 
         UserDao userDao = new UserDao();
-        User user = null;
-        try {
-            user = userDao.findByUserId(userId);
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-        }
-
+        User user = userDao.findByUserId(userId);
         if (user == null) {
             req.setAttribute("loginFailed", true);
             return "/user/login.jsp";

@@ -1,17 +1,13 @@
 package next.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import core.mvc.Controller;
 import next.dao.UserDao;
+import next.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import core.db.DataBase;
-import core.mvc.Controller;
-import next.model.User;
-
-import java.sql.SQLException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class UpdateUserController implements Controller {
     private static final Logger log = LoggerFactory.getLogger(UpdateUserController.class);
@@ -20,13 +16,7 @@ public class UpdateUserController implements Controller {
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         UserDao userDao = new UserDao();
         String userId = req.getParameter("userId");
-        User user = null;
-        try {
-            user = userDao.findByUserId(userId);
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-        }
-
+        User user = userDao.findByUserId(userId);
         if (user == null) {
             throw new NullPointerException("유저[" + userId + "]를 찾을 수 없습니다.");
         }
@@ -38,12 +28,9 @@ public class UpdateUserController implements Controller {
         User updateUser = new User(req.getParameter("userId"), req.getParameter("password"), req.getParameter("name"),
                 req.getParameter("email"));
         log.debug("Update User : {}", updateUser);
-        try {
-            user.update(updateUser);
-            userDao.update(user);
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-        }
+
+        user.update(updateUser);
+        userDao.update(user);
 
         return "redirect:/";
     }

@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
 
 public class UpdateFormUserController implements Controller {
 
@@ -19,13 +18,7 @@ public class UpdateFormUserController implements Controller {
         String userId = req.getParameter("userId");
 
         UserDao userDao = new UserDao();
-        User user = null;
-        try {
-            user = userDao.findByUserId(userId);
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-        }
-
+        User user = userDao.findByUserId(userId);
         if (user == null) {
             throw new NullPointerException("유저[" + userId + "]를 찾을 수 없습니다.");
         }
