@@ -9,15 +9,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class JdbcTemplate {
+public class JdbcTemplate {
 
-    public void update(String sql) throws SQLException {
+    public void update(String sql, PreparedStatementSetter pstmts) throws SQLException {
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
-            setValues(pstmt);
+            pstmts.setValues(pstmt);
 
             pstmt.executeUpdate();
         } finally {
@@ -31,8 +31,11 @@ public abstract class JdbcTemplate {
         }
     }
 
-    @SuppressWarnings("rawtypes")
-    public List query(String sql, RowMapper rm) throws SQLException {
+    public <T> List<T> query(String sql, RowMapper<T> rm) throws SQLException {
+        return query(sql, null, rm);
+    }
+
+    public <T> List<T> query(String sql, PreparedStatementSetter pstmts, RowMapper<T> rm) throws SQLException {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -40,14 +43,18 @@ public abstract class JdbcTemplate {
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
-            setValues(pstmt);
+
+            if (pstmts != null) {
+                pstmts.setValues(pstmt);
+            }
 
             rs = pstmt.executeQuery();
 
-            List<Object> objects = new ArrayList<>();
+            List<T> objects = new ArrayList<>();
             while (rs.next()) {
                 objects.add(rm.mapRow(rs));
             }
+
             return objects;
         } finally {
             if (rs != null) {
@@ -62,14 +69,11 @@ public abstract class JdbcTemplate {
         }
     }
 
-    @SuppressWarnings("rawtypes")
-    public Object queryForObject(String sql, RowMapper rm) throws SQLException {
-        List objects = query(sql, rm);
+    public <T> T queryForObject(String sql, PreparedStatementSetter pstmts, RowMapper<T> rm) throws SQLException {
+        List<T> objects = query(sql, pstmts, rm);
         if (objects.isEmpty()) {
             return null;
         }
         return objects.get(0);
     }
-
-    protected abstract void setValues(PreparedStatement pstmt) throws SQLException;
 }
