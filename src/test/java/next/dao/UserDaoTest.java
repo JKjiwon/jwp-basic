@@ -1,20 +1,19 @@
 package next.dao;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
+import core.jdbc.ConnectionManager;
+import next.model.User;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
-import core.jdbc.ConnectionManager;
-import next.model.User;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserDaoTest {
-    @Before
+    @BeforeEach
     public void setup() {
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(new ClassPathResource("jwp.sql"));
@@ -27,18 +26,27 @@ public class UserDaoTest {
         UserDao userDao = new UserDao();
         userDao.insert(expected);
         User actual = userDao.findByUserId(expected.getUserId());
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
 
         expected.update(new User("userId", "password2", "name2", "sanjigi@email.com"));
         userDao.update(expected);
         actual = userDao.findByUserId(expected.getUserId());
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     public void findAll() throws Exception {
         UserDao userDao = new UserDao();
+
+        for (int i = 0; i < 3; i++) {
+            User user = new User("user" + i, "password", "name" + i, "javajigi@email.com");
+            userDao.insert(user);
+        }
+
         List<User> users = userDao.findAll();
-        assertEquals(1, users.size());
+
+        assertThat(users).hasSize(3)
+                .extracting("userId")
+                .containsExactly("user0", "user1", "user2");
     }
 }
