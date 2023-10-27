@@ -13,6 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserDaoTest {
+
     @BeforeEach
     public void setup() {
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
@@ -21,16 +22,29 @@ public class UserDaoTest {
     }
 
     @Test
-    public void crud() throws Exception {
+    public void findById() throws Exception {
         User expected = new User("userId", "password", "name", "javajigi@email.com");
         UserDao userDao = new UserDao();
         userDao.insert(expected);
         User actual = userDao.findByUserId(expected.getUserId());
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void findById_not_found() throws Exception {
+        UserDao userDao = new UserDao();
+        assertThat(userDao.findByUserId("userId")).isNull();
+    }
+
+    @Test
+    public void update() throws Exception {
+        User expected = new User("userId", "password", "name", "javajigi@email.com");
+        UserDao userDao = new UserDao();
+        userDao.insert(expected);
 
         expected.update(new User("userId", "password2", "name2", "sanjigi@email.com"));
         userDao.update(expected);
-        actual = userDao.findByUserId(expected.getUserId());
+        User actual = userDao.findByUserId(expected.getUserId());
         assertThat(actual).isEqualTo(expected);
     }
 
