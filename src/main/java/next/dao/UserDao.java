@@ -8,30 +8,15 @@ public class UserDao {
 
     public void insert(User user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
-
-        PreparedStatementSetter pstmts = pstmt -> {
-            pstmt.setString(1, user.getUserId());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setString(4, user.getEmail());
-        };
-
         String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, pstmts);
+        jdbcTemplate.update(sql, user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
     }
 
     public void update(User user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-        PreparedStatementSetter pstmts = pstmt -> {
-            pstmt.setString(1, user.getPassword());
-            pstmt.setString(2, user.getName());
-            pstmt.setString(3, user.getEmail());
-            pstmt.setString(4, user.getUserId());
-        };
-
         String sql = "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
-        jdbcTemplate.update(sql, pstmts);
+        jdbcTemplate.update(sql, user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
     }
 
     public List<User> findAll() {
@@ -50,7 +35,6 @@ public class UserDao {
     public User findByUserId(String userId) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-        PreparedStatementSetter pstmts = pstmt -> pstmt.setString(1, userId);
         RowMapper<User> rm = rs -> new User(
                 rs.getString("userId"),
                 rs.getString("password"),
@@ -58,7 +42,7 @@ public class UserDao {
                 rs.getString("email"));
 
         String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
-        return jdbcTemplate.queryForObject(sql, pstmts, rm);
+        return jdbcTemplate.queryForObject(sql, rm, userId);
     }
 
 }

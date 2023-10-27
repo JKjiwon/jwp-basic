@@ -22,18 +22,20 @@ public class JdbcTemplate {
         }
     }
 
-    public <T> List<T> query(String sql, RowMapper<T> rm) throws DataAccessException {
-        return query(sql, null, rm);
+    public void update(String sql, Object... parameters) throws DataAccessException {
+        update(sql, createPreparedStatementSetter(parameters));
     }
 
-    public <T> List<T> query(String sql, PreparedStatementSetter pstmts, RowMapper<T> rm) throws DataAccessException {
+    public <T> List<T> query(String sql, RowMapper<T> rm, Object... parameters) throws DataAccessException {
+        return query(sql, rm, createPreparedStatementSetter(parameters));
+    }
+
+    public <T> List<T> query(String sql, RowMapper<T> rm, PreparedStatementSetter pstmts) throws DataAccessException {
         ResultSet rs = null;
         try (Connection con = ConnectionManager.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
 
-            if (pstmts != null) {
-                pstmts.setValues(pstmt);
-            }
+            pstmts.setValues(pstmt);
 
             rs = pstmt.executeQuery();
 
@@ -56,11 +58,27 @@ public class JdbcTemplate {
         }
     }
 
-    public <T> T queryForObject(String sql, PreparedStatementSetter pstmts, RowMapper<T> rm) throws DataAccessException {
-        List<T> objects = query(sql, pstmts, rm);
+    public <T> T queryForObject(String sql, RowMapper<T> rm, PreparedStatementSetter pstmts) throws DataAccessException {
+        List<T> objects = query(sql, rm, pstmts);
         if (objects.isEmpty()) {
             return null;
         }
         return objects.get(0);
+    }
+
+    public <T> T queryForObject(String sql, RowMapper<T> rm, Object... parameters) throws DataAccessException {
+        List<T> objects = query(sql, rm, createPreparedStatementSetter(parameters));
+        if (objects.isEmpty()) {
+            return null;
+        }
+        return objects.get(0);
+    }
+
+    private PreparedStatementSetter createPreparedStatementSetter(Object[] parameters) {
+        return pstmt -> {
+            for (int i = 0; i < parameters.length; i++) {
+                pstmt.setObject(i + 1, parameters[i]);
+            }
+        };
     }
 }
