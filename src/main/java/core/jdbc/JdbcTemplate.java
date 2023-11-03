@@ -7,15 +7,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class JdbcTemplate {
+public class JdbcTemplate {
 
-    public void update(String sql) throws SQLException {
+    public void update(String sql, PreparedStatementSetter pss) throws SQLException {
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
-            setValues(pstmt);
+            pss.setValues(pstmt);
 
             pstmt.executeUpdate();
         } finally {
@@ -30,14 +30,14 @@ public abstract class JdbcTemplate {
     }
 
     @SuppressWarnings("rawtypes")
-    public List query(String sql, RowMapper rowMapper) throws SQLException {
+    public List query(String sql, RowMapper rowMapper, PreparedStatementSetter pss) throws SQLException {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
-            setValues(pstmt);
+            pss.setValues(pstmt);
             rs = pstmt.executeQuery();
 
             List<Object> result = new ArrayList<>();
@@ -59,13 +59,21 @@ public abstract class JdbcTemplate {
         }
     }
 
-    public Object queryForObject(String sql, RowMapper rowMapper) throws SQLException {
-        List result = query(sql, rowMapper);
+    public List query(String sql, RowMapper rowMapper, Object... objects) throws SQLException {
+        PreparedStatementSetter pss = pstmt -> {
+            for (int i = 0; i < objects.length; i++) {
+                pstmt.setObject(i + 1, objects[i]);
+            }
+        };
+        return query(sql, rowMapper, pss);
+    }
+
+    public Object queryForObject(String sql, RowMapper rowMapper, PreparedStatementSetter pss) throws SQLException {
+        List result = query(sql, rowMapper, pss);
 
         if (result.isEmpty()) {
             return null;
         }
         return result.get(0);
     }
-    protected abstract void setValues(PreparedStatement pstmt) throws SQLException;
 }
