@@ -17,6 +17,19 @@ public class JdbcTemplate {
             throw new DataAccessException(e);
         }
     }
+    public void update(PreparedStatementCreator psc, KeyHolder holder) throws DataAccessException {
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement ps = psc.createPreparedStatement(conn)) {
+
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                holder.setId(rs.getLong(1));
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e);
+        }
+    }
 
     public void update(String sql, Object... parameters) {
         update(sql, createPreparedStatementSetter(parameters));
