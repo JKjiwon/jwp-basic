@@ -14,6 +14,7 @@ import core.jdbc.ConnectionManager;
 import next.model.User;
 
 public class UserDaoTest {
+
     @Before
     public void setup() {
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
