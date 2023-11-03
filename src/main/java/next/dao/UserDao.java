@@ -40,14 +40,14 @@ public class UserDao {
     public List<User> findAll() throws SQLException {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-        RowMapper rowMapper = rs -> new User(
+        RowMapper<User> rowMapper = rs -> new User(
                 rs.getString("userId"),
                 rs.getString("password"),
                 rs.getString("name"),
                 rs.getString("email"));
 
         String sql = "SELECT userId, password, name, email FROM USERS";
-        return (List<User>) jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     public User findByUserId(String userId) throws SQLException {
@@ -55,11 +55,11 @@ public class UserDao {
 
         String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
         PreparedStatementSetter pss = pstmt -> pstmt.setString(1, userId);
-        RowMapper rowMapper = rs -> new User(rs.getString("userId"),
+        RowMapper<User> rowMapper = rs -> new User(rs.getString("userId"),
                 rs.getString("password"),
                 rs.getString("name"),
                 rs.getString("email"));
 
-        return (User) jdbcTemplate.queryForObject(sql, rowMapper, pss);
+        return jdbcTemplate.queryForObject(sql, rowMapper, pss);
     }
 }
