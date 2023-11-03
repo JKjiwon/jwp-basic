@@ -5,11 +5,10 @@ import core.jdbc.PreparedStatementSetter;
 import core.jdbc.RowMapper;
 import next.model.User;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class UserDao {
-    public void insert(User user) throws SQLException {
+    public void insert(User user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
         String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
@@ -23,7 +22,7 @@ public class UserDao {
         jdbcTemplate.update(sql, pss);
     }
 
-    public void update(User user) throws SQLException {
+    public void update(User user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
         String sql = "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
@@ -37,7 +36,7 @@ public class UserDao {
         jdbcTemplate.update(sql, pss);
     }
 
-    public List<User> findAll() throws SQLException {
+    public List<User> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
         RowMapper<User> rowMapper = rs -> new User(
@@ -50,7 +49,7 @@ public class UserDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public User findByUserId(String userId) throws SQLException {
+    public User findByUserId(String userId) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
         String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
