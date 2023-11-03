@@ -1,7 +1,6 @@
 package next.dao;
 
 import core.jdbc.JdbcTemplate;
-import core.jdbc.PreparedStatementSetter;
 import core.jdbc.RowMapper;
 import next.model.User;
 
@@ -12,28 +11,14 @@ public class UserDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
         String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
-        PreparedStatementSetter pss = pstmt -> {
-            pstmt.setString(1, user.getUserId());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setString(4, user.getEmail());
-        };
-
-        jdbcTemplate.update(sql, pss);
+        jdbcTemplate.update(sql, user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
     }
 
     public void update(User user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
         String sql = "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
-        PreparedStatementSetter pss = pstmt -> {
-            pstmt.setString(1, user.getPassword());
-            pstmt.setString(2, user.getName());
-            pstmt.setString(3, user.getEmail());
-            pstmt.setString(4, user.getUserId());
-        };
-
-        jdbcTemplate.update(sql, pss);
+        jdbcTemplate.update(sql, user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
     }
 
     public List<User> findAll() {
@@ -53,12 +38,12 @@ public class UserDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
         String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
-        PreparedStatementSetter pss = pstmt -> pstmt.setString(1, userId);
+
         RowMapper<User> rowMapper = rs -> new User(rs.getString("userId"),
                 rs.getString("password"),
                 rs.getString("name"),
                 rs.getString("email"));
 
-        return jdbcTemplate.queryForObject(sql, rowMapper, pss);
+        return jdbcTemplate.queryForObject(sql, rowMapper, userId);
     }
 }
