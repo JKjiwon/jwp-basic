@@ -1,6 +1,7 @@
 package next.dao;
 
 import core.jdbc.JdbcTemplate;
+import core.jdbc.RowMapper;
 import next.model.User;
 
 import java.sql.PreparedStatement;
@@ -18,11 +19,6 @@ public class UserDao {
                 pstmt.setString(3, user.getName());
                 pstmt.setString(4, user.getEmail());
             }
-
-            @Override
-            protected Object mapRow(ResultSet rs) throws SQLException {
-                return null;
-            }
         };
 
         jdbcTemplate.update("INSERT INTO USERS VALUES (?, ?, ?, ?)");
@@ -38,11 +34,6 @@ public class UserDao {
                 pstmt.setString(3, user.getEmail());
                 pstmt.setString(4, user.getUserId());
             }
-
-            @Override
-            protected Object mapRow(ResultSet rs) throws SQLException {
-                return null;
-            }
         };
 
         jdbcTemplate.update("UPDATE USERS SET password=?, name=?, email=? WHERE userId=?");
@@ -54,16 +45,16 @@ public class UserDao {
             protected void setValues(PreparedStatement pstmt) throws SQLException {
             }
 
-            @Override
-            protected Object mapRow(ResultSet rs) throws SQLException {
-                return new User(
-                        rs.getString("userId"),
-                        rs.getString("password"),
-                        rs.getString("name"),
-                        rs.getString("email"));
-            }
         };
-        return (List<User>) jdbcTemplate.query("SELECT userId, password, name, email FROM USERS");
+
+        RowMapper rowMapper = rs -> new User(
+                rs.getString("userId"),
+                rs.getString("password"),
+                rs.getString("name"),
+                rs.getString("email"));
+
+        String sql = "SELECT userId, password, name, email FROM USERS";
+        return (List<User>) jdbcTemplate.query(sql, rowMapper);
     }
 
     public User findByUserId(String userId) throws SQLException {
@@ -72,14 +63,11 @@ public class UserDao {
             protected void setValues(PreparedStatement pstmt) throws SQLException {
                 pstmt.setString(1, userId);
             }
-
-            @Override
-            protected Object mapRow(ResultSet rs) throws SQLException {
-                return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-                        rs.getString("email"));
-            }
         };
 
-        return (User) jdbcTemplate.queryForObject("SELECT userId, password, name, email FROM USERS WHERE userid=?");
+        String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
+        RowMapper rowMapper = rs -> new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+                rs.getString("email"));
+        return (User) jdbcTemplate.queryForObject(sql, rowMapper);
     }
 }
