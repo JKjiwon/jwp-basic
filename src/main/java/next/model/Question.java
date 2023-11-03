@@ -48,4 +48,16 @@ public class Question {
     public int getCountOfAnswer() {
         return countOfAnswer;
     }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "questionId=" + questionId +
+                ", writer='" + writer + '\'' +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", createdDate=" + createdDate +
+                ", countOfAnswer=" + countOfAnswer +
+                '}';
+    }
 }
