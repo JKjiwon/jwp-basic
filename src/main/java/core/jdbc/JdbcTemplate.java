@@ -10,42 +10,19 @@ import java.util.List;
 public class JdbcTemplate {
 
     public void update(String sql, PreparedStatementSetter pss) throws DataAccessException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        try {
-            con = ConnectionManager.getConnection();
-            pstmt = con.prepareStatement(sql);
+        try (Connection con = ConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
             pss.setValues(pstmt);
 
             pstmt.executeUpdate();
         } catch (Exception e) {
             throw new DataAccessException(e);
-        } finally {
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (SQLException e) {
-                    throw new DataAccessException(e);
-                }
-            }
-
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    throw new DataAccessException(e);
-                }
-            }
         }
     }
 
+    @SuppressWarnings("ThrowFromFinallyBlock")
     public <T> List<T> query(String sql, RowMapper<T> rowMapper, PreparedStatementSetter pss) throws DataAccessException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
         ResultSet rs = null;
-        try {
-            con = ConnectionManager.getConnection();
-            pstmt = con.prepareStatement(sql);
+        try (Connection con = ConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
             pss.setValues(pstmt);
             rs = pstmt.executeQuery();
 
@@ -61,22 +38,6 @@ public class JdbcTemplate {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
-                    throw new DataAccessException(e);
-                }
-            }
-
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (SQLException e) {
-                    throw new DataAccessException(e);
-                }
-            }
-
-            if (con != null) {
-                try {
-                    con.close();
                 } catch (SQLException e) {
                     throw new DataAccessException(e);
                 }
