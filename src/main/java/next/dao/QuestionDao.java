@@ -1,15 +1,13 @@
 package next.dao;
 
-import core.jdbc.JdbcTemplate;
-import core.jdbc.KeyHolder;
-import core.jdbc.PreparedStatementCreator;
-import core.jdbc.RowMapper;
+import core.jdbc.*;
 import next.model.Question;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class QuestionDao {
 
@@ -22,6 +20,13 @@ public class QuestionDao {
                     rs.getTimestamp("createdDate").toLocalDateTime(),
                     rs.getInt("countOfAnswer")
             );
+
+    public Question save(Question question) {
+        if (question.getQuestionId() == null) {
+            return insert(question);
+        }
+        return update(question);
+    }
 
     public Question insert(Question question) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
@@ -41,11 +46,38 @@ public class QuestionDao {
         return findByQuestionId(holder.getId());
     }
 
+    public Question update(Question question) {
+        if (question.getQuestionId() == null) {
+            throw new IllegalArgumentException("questionId 가 없습니다.");
+        }
+
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        String sql = "UPDATE QUESTIONS SET writer=?, title=?, contents=?, createdDate=?, countOfAnswer=? WHERE questionId=?";
+
+        PreparedStatementSetter pss = pstmt -> {
+            pstmt.setString(1, question.getWriter());
+            pstmt.setString(2, question.getTitle());
+            pstmt.setString(3, question.getContents());
+            pstmt.setTimestamp(4, convertLocalDateTimeToTimestamp(question.getCreatedDate()));
+            pstmt.setInt(5, question.getCountOfAnswer());
+            pstmt.setLong(6, question.getQuestionId());
+        };
+        jdbcTemplate.update(sql, pss);
+        return findByQuestionId(question.getQuestionId());
+    }
+
     public Question findByQuestionId(Long questionId) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String sql = "SELECT questionId, writer, title, contents, createdDate, countOfAnswer FROM QUESTIONS WHERE questionId=?";
 
         return jdbcTemplate.queryForObject(sql, QUESTION_ROW_MAPPER, questionId);
+    }
+
+    public List<Question> findAll() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        String sql = "SELECT questionId, writer, title, contents, createdDate, countOfAnswer FROM QUESTIONS";
+
+        return jdbcTemplate.query(sql, QUESTION_ROW_MAPPER);
     }
 
     private Timestamp convertLocalDateTimeToTimestamp(LocalDateTime localDateTime) {
