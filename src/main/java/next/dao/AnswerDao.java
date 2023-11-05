@@ -73,6 +73,12 @@ public class AnswerDao {
         return findByAnswerId(answer.getQuestionId());
     }
 
+    public void delete(Answer answer) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        String sql = "DELETE FROM ANSWERS WHERE answerId=?";
+        jdbcTemplate.update(sql, answer.getAnswerId());
+    }
+
     public Answer findByAnswerId(Long answerId) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String sql = "SELECT answerId, writer, contents, createdDate, questionId FROM ANSWERS WHERE answerId=?";

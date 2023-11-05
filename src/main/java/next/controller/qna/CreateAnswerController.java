@@ -29,7 +29,7 @@ public class CreateAnswerController implements Controller {
 
         QuestionDao questionDao = new QuestionDao();
         Question question = questionDao.findByQuestionId(questionId);
-        question.countUpOfCountOfAnswer();
+        question.addAnswer();
         questionDao.save(question);
 
         return "redirect:/qna/show?questionId=" + questionId;

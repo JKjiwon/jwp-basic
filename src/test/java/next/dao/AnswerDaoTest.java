@@ -94,4 +94,19 @@ class AnswerDaoTest {
                         Tuple.tuple("testId1", "testContents1")
                 );
     }
+
+    @DisplayName("답변을 삭제 할 수 있다.")
+    @Test
+    public void delete() {
+        // given
+        Answer answer = new Answer("testId", "testContents", LocalDateTime.now(), 1L);
+        AnswerDao answerDao = new AnswerDao();
+        Answer savedAnswer = answerDao.save(answer);
+
+        // when
+        answerDao.delete(savedAnswer);
+
+        // then
+        assertThat(answerDao.findByAnswerId(savedAnswer.getAnswerId())).isNull();
+    }
 }

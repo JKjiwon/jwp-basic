@@ -25,8 +25,12 @@ public class Question {
         this.countOfAnswer = countOfAnswer;
     }
 
-    public void countUpOfCountOfAnswer() {
+    public void addAnswer() {
         countOfAnswer++;
+    }
+
+    public void removeAnswer() {
+        countOfAnswer--;
     }
 
     public Question(String writer, String title, String contents, LocalDateTime createdDate) {
