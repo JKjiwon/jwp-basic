@@ -29,6 +29,7 @@ public class RequestMapping {
         mappings.put("/qna/show", new GetQuestionController());
         mappings.put("/qna/updateForm", new UpdateFormQuestionController());
         mappings.put("/qna/update", new UpdateQuestionController());
+        mappings.put("/qna/delete", new DeleteQuestionController());
 
         logger.info("Initialized Request Mapping!");
     }
