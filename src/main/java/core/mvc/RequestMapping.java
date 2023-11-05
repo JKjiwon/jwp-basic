@@ -3,17 +3,11 @@ package core.mvc;
 import java.util.HashMap;
 import java.util.Map;
 
+import next.controller.*;
+import next.controller.qna.*;
+import next.controller.user.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import next.controller.CreateUserController;
-import next.controller.HomeController;
-import next.controller.ListUserController;
-import next.controller.LoginController;
-import next.controller.LogoutController;
-import next.controller.ProfileController;
-import next.controller.UpdateFormUserController;
-import next.controller.UpdateUserController;
 
 public class RequestMapping {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
@@ -30,6 +24,14 @@ public class RequestMapping {
         mappings.put("/users/create", new CreateUserController());
         mappings.put("/users/updateForm", new UpdateFormUserController());
         mappings.put("/users/update", new UpdateUserController());
+        mappings.put("/qna/create", new CreateQuestionController());
+        mappings.put("/qna/form", new CreateFormQuestionController());
+        mappings.put("/qna/show", new GetQuestionController());
+        mappings.put("/qna/updateForm", new UpdateFormQuestionController());
+        mappings.put("/qna/update", new UpdateQuestionController());
+        mappings.put("/qna/delete", new DeleteQuestionController());
+        mappings.put("/answers/create", new CreateAnswerController());
+        mappings.put("/answers/delete", new DeleteAnswerController());
 
         logger.info("Initialized Request Mapping!");
     }

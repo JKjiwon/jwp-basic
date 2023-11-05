@@ -1,14 +1,16 @@
 package next.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
 import core.jdbc.JdbcTemplate;
 import core.jdbc.RowMapper;
 import next.model.User;
 
+import java.util.List;
+
 public class UserDao {
+
+    private static final RowMapper<User> USER_ROW_MAPPER = rs -> new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+            rs.getString("email"));
+
     public void insert(User user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
@@ -19,30 +21,14 @@ public class UserDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
 
-        RowMapper<User> rm = new RowMapper<User>() {
-            @Override
-            public User mapRow(ResultSet rs) throws SQLException {
-                return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-                        rs.getString("email"));
-            }
-        };
-
-        return jdbcTemplate.queryForObject(sql, rm, userId);
+        return jdbcTemplate.queryForObject(sql, USER_ROW_MAPPER, userId);
     }
 
     public List<User> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         String sql = "SELECT userId, password, name, email FROM USERS";
 
-        RowMapper<User> rm = new RowMapper<User>() {
-            @Override
-            public User mapRow(ResultSet rs) throws SQLException {
-                return new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-                        rs.getString("email"));
-            }
-        };
-
-        return jdbcTemplate.query(sql, rm);
+        return jdbcTemplate.query(sql, USER_ROW_MAPPER);
     }
 
     public void update(User user) {
