@@ -98,6 +98,21 @@ public class QuestionDaoTest {
                 );
     }
 
+    @DisplayName("질문을 삭제 할 수 있다.")
+    @Test
+    public void delete() {
+        // given
+        Question question = new Question("김지원", "JWP", "How to study jwp", LocalDateTime.now());
+        QuestionDao questionDao = new QuestionDao();
+        Question savedQuestion = questionDao.save(question);
+
+        // when
+        questionDao.delete(savedQuestion);
+        
+        // then
+        assertThat(questionDao.findByQuestionId(savedQuestion.getQuestionId())).isNull();
+    }
+
     private Question updateQuestionDto(String title, String contents) {
         return new Question(null, title, contents, null);
     }

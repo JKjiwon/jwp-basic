@@ -17,5 +17,4 @@ public class CreateFormQuestionController implements Controller {
 
         return "/qna/form.jsp";
     }
-
 }

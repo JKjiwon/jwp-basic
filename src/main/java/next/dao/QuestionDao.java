@@ -62,8 +62,15 @@ public class QuestionDao {
             pstmt.setInt(5, question.getCountOfAnswer());
             pstmt.setLong(6, question.getQuestionId());
         };
+
         jdbcTemplate.update(sql, pss);
         return findByQuestionId(question.getQuestionId());
+    }
+
+    public void delete(Question question) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        String sql = "DELETE FROM QUESTIONS WHERE questionId=?";
+        jdbcTemplate.update(sql, question.getQuestionId());
     }
 
     public Question findByQuestionId(Long questionId) {
