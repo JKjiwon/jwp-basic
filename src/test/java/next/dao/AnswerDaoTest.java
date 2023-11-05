@@ -53,7 +53,7 @@ class AnswerDaoTest {
         assertThat(updateQuestion.getContents()).isEqualTo("updated testContents");
     }
 
-    @DisplayName("질문을 questionId로 조회 할 수 있다.")
+    @DisplayName("답변을 answerId로 조회 할 수 있다.")
     @Test
     public void findByQuestionId() {
         // given
@@ -70,13 +70,13 @@ class AnswerDaoTest {
         assertThat(foundAnswer.getQuestionId()).isEqualTo(1);
     }
 
-    @DisplayName("질문을 다수 조회 할 수 있다.")
+    @DisplayName("답변을 questionId로 조회 할 수 있다.")
     @Test
-    public void findAll() {
+    public void findAllByQuestionId() {
         // given
         Answer answer1 = new Answer("testId1", "testContents1", LocalDateTime.of(2023, 11, 5, 10, 1), 1L);
         Answer answer2 = new Answer("testId2", "testContents2", LocalDateTime.of(2023, 11, 5, 10, 2), 1L);
-        Answer answer3 = new Answer("testId3", "testContents3", LocalDateTime.of(2023, 11, 5, 10, 3), 1L);
+        Answer answer3 = new Answer("testId3", "testContents3", LocalDateTime.of(2023, 11, 5, 10, 3), 2L);
 
         AnswerDao answerDao = new AnswerDao();
         answerDao.save(answer1);
@@ -84,13 +84,12 @@ class AnswerDaoTest {
         answerDao.save(answer3);
 
         // when
-        List<Answer> answers = answerDao.findAll();
+        List<Answer> answers = answerDao.findAllByQuestionId(1L);
 
         // then
-        assertThat(answers).hasSize(3)
+        assertThat(answers).hasSize(2)
                 .extracting("writer", "contents")
                 .containsExactly(
-                        Tuple.tuple("testId3", "testContents3"),
                         Tuple.tuple("testId2", "testContents2"),
                         Tuple.tuple("testId1", "testContents1")
                 );

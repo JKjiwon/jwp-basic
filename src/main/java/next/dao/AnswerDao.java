@@ -80,11 +80,11 @@ public class AnswerDao {
         return jdbcTemplate.queryForObject(sql, ANSWER_ROW_MAPPER, answerId);
     }
 
-    public List<Answer> findAll() {
+    public List<Answer> findAllByQuestionId(Long questionId) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        String sql = "SELECT answerId, writer, contents, createdDate, questionId FROM ANSWERS ORDER BY createdDate DESC";
+        String sql = "SELECT answerId, writer, contents, createdDate, questionId FROM ANSWERS WHERE questionId=? ORDER BY createdDate DESC";
 
-        return jdbcTemplate.query(sql, ANSWER_ROW_MAPPER);
+        return jdbcTemplate.query(sql, ANSWER_ROW_MAPPER, questionId);
     }
 
     private Timestamp convertLocalDateTimeToTimestamp(LocalDateTime localDateTime) {
