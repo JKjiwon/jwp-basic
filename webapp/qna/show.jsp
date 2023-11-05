@@ -14,7 +14,7 @@
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
             <header class="qna-header">
-                <h2 class="qna-title">InitializingBean implements afterPropertiesSet() 호출되지 않는 문제.</h2>
+                <h2 class="qna-title">${question.title}</h2>
             </header>
             <div class="content-main">
                 <article class="article">
@@ -24,18 +24,13 @@
                                  class="article-author-thumb" alt="">
                         </div>
                         <div class="article-header-text">
-                            <a href="/users/92/kimmunsu" class="article-author-name">kimmunsu</a>
-                            <a href="/questions/413" class="article-header-time" title="퍼머링크">
-                                2015-12-30 01:47
-                                <i class="icon-link"></i>
-                            </a>
+                            <a href="/users/profile?userId=${user.userId}"
+                               class="article-author-name">${user.userId}</a>
+                            <p class="article-header-time"> ${question.createdDate}</p>
                         </div>
                     </div>
                     <div class="article-doc">
-                        <p>A 에 의존성을 가지는 B라는 클래스가 있습니다.</p>
-                        <p>B라는 클래스는 InitializingBean 을 상속하고 afterPropertiesSet을 구현하고 있습니다.
-                            서버가 가동되면서 bean들이 초기화되는 시점에 B라는 클래스의 afterPropertiesSet 메소드는</p>
-                        <p>A라는 클래스의 특정 메소드인 afunc()를 호출하고 있습니다.</p>
+                        <span style="white-space: pre-line">${question.contents}</span>
                     </div>
                     <div class="article-util">
                         <ul class="article-util-list">
@@ -49,12 +44,13 @@
                                 </form>
                             </li>
                             <li>
-                                <a class="link-modify-article" href="/index.html">목록</a>
+                                <a class="link-modify-article" href="/">목록</a>
                             </li>
                         </ul>
                     </div>
                 </article>
 
+                <%-- comment --%>
                 <div class="qna-comment">
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count"><strong>2</strong>개의 의견</p>

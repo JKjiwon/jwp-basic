@@ -79,9 +79,9 @@ public class QuestionDaoTest {
     @DisplayName("질문을 다수 조회 할 수 있다.")
     @Test
     public void findAll() {
-        Question question1 = new Question("김지원1", "JWP1", "How to study jwp1", LocalDateTime.now());
-        Question question2 = new Question("김지원2", "JWP2", "How to study jwp2", LocalDateTime.now());
-        Question question3 = new Question("김지원3", "JWP3", "How to study jwp3", LocalDateTime.now());
+        Question question1 = new Question("김지원1", "JWP1", "How to study jwp1", LocalDateTime.of(2023, 11, 5, 10, 1));
+        Question question2 = new Question("김지원2", "JWP2", "How to study jwp2", LocalDateTime.of(2023, 11, 5, 10, 2));
+        Question question3 = new Question("김지원3", "JWP3", "How to study jwp3", LocalDateTime.of(2023, 11, 5, 10, 3));
 
         QuestionDao questionDao = new QuestionDao();
         questionDao.save(question1);
@@ -92,9 +92,9 @@ public class QuestionDaoTest {
         assertThat(questions).hasSize(3)
                 .extracting("writer", "title", "contents")
                 .containsExactly(
-                        Tuple.tuple("김지원1", "JWP1", "How to study jwp1"),
+                        Tuple.tuple("김지원3", "JWP3", "How to study jwp3"),
                         Tuple.tuple("김지원2", "JWP2", "How to study jwp2"),
-                        Tuple.tuple("김지원3", "JWP3", "How to study jwp3")
+                        Tuple.tuple("김지원1", "JWP1", "How to study jwp1")
                 );
     }
 

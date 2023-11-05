@@ -75,7 +75,7 @@ public class QuestionDao {
 
     public List<Question> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        String sql = "SELECT questionId, writer, title, contents, createdDate, countOfAnswer FROM QUESTIONS";
+        String sql = "SELECT questionId, writer, title, contents, createdDate, countOfAnswer FROM QUESTIONS ORDER BY createdDate DESC";
 
         return jdbcTemplate.query(sql, QUESTION_ROW_MAPPER);
     }
