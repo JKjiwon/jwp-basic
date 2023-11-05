@@ -25,6 +25,10 @@ public class Question {
         this.countOfAnswer = countOfAnswer;
     }
 
+    public void countUpOfCountOfAnswer() {
+        countOfAnswer++;
+    }
+
     public Question(String writer, String title, String contents, LocalDateTime createdDate) {
         this.writer = writer;
         this.title = title;
