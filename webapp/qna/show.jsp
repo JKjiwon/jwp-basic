@@ -85,6 +85,7 @@
 								</div>
 							</article>
                             </c:forEach>
+
 							<div class="answerWrite">
 								<form name="answer" method="post">
 									<input type="hidden" name="questionId" value="${question.questionId}">
