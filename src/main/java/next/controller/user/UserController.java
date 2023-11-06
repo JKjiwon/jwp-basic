@@ -21,7 +21,7 @@ public class UserController extends AbstractNewController {
 
     private UserDao userDao = UserDao.getInstance();
 
-    @RequestMapping(value = "/users/form", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/create", method = RequestMethod.GET)
     public ModelAndView createForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
         return jspView("/user/form.jsp");
     }
@@ -52,7 +52,7 @@ public class UserController extends AbstractNewController {
         return mav;
     }
 
-    @RequestMapping(value = "/users/updateForm", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/update", method = RequestMethod.GET)
     public ModelAndView updateForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
         User user = userDao.findByUserId(request.getParameter("userId"));
 
