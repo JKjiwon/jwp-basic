@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -37,16 +38,37 @@ public class ReflectionTest {
 
         logger.debug(clazz.getName());
     }
-    
+
+    // public User(String userId, String password, String name, String email)
     @Test
-    public void newInstanceWithConstructorArgs() {
+    public void newInstanceWithConstructorArgs() throws InvocationTargetException, InstantiationException, IllegalAccessException {
         Class<User> clazz = User.class;
         logger.debug(clazz.getName());
+
+        for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
+            if (constructor.getParameterTypes().length == 4) {
+                User user = (User) constructor.newInstance("jiwon", "1234", "김지원", "jwkim@gmail.com");
+                logger.debug("user={}", user);
+            }
+        }
+
     }
     
     @Test
-    public void privateFieldAccess() {
+    public void privateFieldAccess() throws NoSuchFieldException, IllegalAccessException {
+        Student student = new Student();
         Class<Student> clazz = Student.class;
         logger.debug(clazz.getName());
+
+        Field nameField = clazz.getDeclaredField("name");
+        nameField.setAccessible(true);
+        nameField.set(student, "jiwon");
+
+
+        Field ageField = clazz.getDeclaredField("age");
+        ageField.setAccessible(true);
+        ageField.set(student, 32);
+
+        logger.debug("student={}", student);
     }
 }
