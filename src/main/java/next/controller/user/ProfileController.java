@@ -1,16 +1,14 @@
 package next.controller.user;
 
-import core.mvc.Controller;
+import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
-import core.mvc.ModelMap;
-import core.mvc.view.JspView;
 import next.dao.UserDao;
 import next.model.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ProfileController implements Controller {
+public class ProfileController extends AbstractController {
     @Override
     public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String userId = req.getParameter("userId");
@@ -19,8 +17,7 @@ public class ProfileController implements Controller {
         if (user == null) {
             throw new NullPointerException("사용자를 찾을 수 없습니다.");
         }
-        ModelMap model = new ModelMap();
-        model.setAttribute("user", user);
-        return new ModelAndView(model, new JspView("/user/profile.jsp"));
+
+        return jspView("/user/profile.jsp").addObject("user", user);
     }
 }

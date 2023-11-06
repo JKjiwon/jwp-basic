@@ -31,19 +31,12 @@ public class DispatcherServlet extends HttpServlet {
         logger.debug("Method : {}, Request URI : {}", req.getMethod(), requestUri);
 
         Controller controller = rm.findController(requestUri);
+        ModelAndView modelAndView;
 
         try {
-            ModelAndView modelAndView = controller.execute(req, resp);
-
-            // model
-            ModelMap model = modelAndView.getModel();
-            for (String attrName : model.keySet()) {
-                req.setAttribute(attrName, model.getAttribute(attrName));
-            }
-
-            // view
+            modelAndView = controller.execute(req, resp);
             View view = modelAndView.getView();
-            view.render(req, resp);
+            view.render(modelAndView.getModel(), req, resp);
         } catch (Throwable e) {
             logger.error("Exception : {}", e);
             throw new ServletException(e.getMessage());

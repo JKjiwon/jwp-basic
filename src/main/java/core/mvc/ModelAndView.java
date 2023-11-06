@@ -2,22 +2,25 @@ package core.mvc;
 
 import core.mvc.view.View;
 
-public class ModelAndView {
-    private ModelMap model;
-    private View view;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-    public ModelAndView(ModelMap model, View view) {
-        this.model = model;
-        this.view = view;
-    }
+public class ModelAndView {
+    private View view;
+    private Map<String, Object> model = new HashMap<>();
 
     public ModelAndView(View view) {
         this.view = view;
-        this.model = new ModelMap();
     }
 
-    public ModelMap getModel() {
-        return model;
+    public ModelAndView addObject(String attrName, Object attrValue) {
+        model.put(attrName, attrValue);
+        return this;
+    }
+
+    public Map<String, Object> getModel() {
+        return Collections.unmodifiableMap(model);
     }
 
     public View getView() {

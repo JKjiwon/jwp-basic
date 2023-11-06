@@ -1,5 +1,6 @@
 package next.controller.qna;
 
+import core.mvc.AbstractController;
 import core.mvc.Controller;
 import core.mvc.ModelAndView;
 import core.mvc.view.JsonView;
@@ -11,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AddAnswerController implements Controller {
+public class AddAnswerController extends AbstractController {
     private static final Logger log = LoggerFactory.getLogger(AddAnswerController.class);
 
     @Override
@@ -23,6 +24,6 @@ public class AddAnswerController implements Controller {
         AnswerDao answerDao = new AnswerDao();
         Answer savedAnswer = answerDao.insert(answer);
 
-        return new ModelAndView(new JsonView(savedAnswer));
+        return jsonView().addObject("answer", savedAnswer);
     }
 }
