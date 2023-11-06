@@ -8,7 +8,7 @@ public class ModelMap extends HashMap<String, Object> {
     public ModelMap() {
     }
 
-    public void addAttribute(String name, Object o) {
+    public void setAttribute(String name, Object o) {
         put(name, o);
     }
 
