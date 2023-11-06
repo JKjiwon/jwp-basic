@@ -8,7 +8,9 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +26,7 @@ public class AnnotationHandlerMapping {
         this.basePackages = basePackage;
     }
 
-    public void initialize() throws Exception {
+    public void initialize() throws ServletException {
         Reflections reflections = new Reflections(basePackages);
         Set<Class<?>> controllerClazz = reflections.getTypesAnnotatedWith(Controller.class);
         for (Class<?> clazz : controllerClazz) {
@@ -32,7 +34,12 @@ public class AnnotationHandlerMapping {
                 if (method.isAnnotationPresent(RequestMapping.class)) {
                     RequestMapping annotation = method.getAnnotation(RequestMapping.class);
                     HandlerKey handlerKey = new HandlerKey(annotation.value(), annotation.method());
-                    Object instance = clazz.getDeclaredConstructor().newInstance();
+                    Object instance = null;
+                    try {
+                        instance = clazz.getDeclaredConstructor().newInstance();
+                    } catch (Exception e) {
+                        throw new ServletException(e);
+                    }
                     handlerExecutions.put(handlerKey, new HandlerExecution(instance, method));
                     log.debug("Add AnnotationHandlerMapping: handlerKey={}, method={}", handlerKey, clazz.getName() + "." + method.getName() + "()");
                 }
