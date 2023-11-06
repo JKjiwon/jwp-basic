@@ -1,12 +1,13 @@
 package next.controller.user;
 
+import core.mvc.AbstractController;
+import core.mvc.ModelAndView;
+import next.dao.UserDao;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import next.dao.UserDao;
-import core.mvc.AbstractController;
-import core.mvc.ModelAndView;
-
+@Deprecated
 public class ProfileController extends AbstractController {
     private UserDao userDao = UserDao.getInstance();
 

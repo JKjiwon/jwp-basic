@@ -1,22 +1,19 @@
 package core.nmvc;
 
-import static org.junit.Assert.*;
-
-import core.annotation.Controller;
+import core.mvc.ModelAndView;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import core.mvc.ModelAndView;
+import static org.junit.Assert.assertEquals;
 
-@Controller
 public class AnnotationHandlerMappingTest {
     private AnnotationHandlerMapping handlerMapping;
     private MockHttpServletResponse response;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         handlerMapping = new AnnotationHandlerMapping("core.nmvc");
         handlerMapping.initialize();
 
