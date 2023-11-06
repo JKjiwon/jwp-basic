@@ -34,10 +34,6 @@ public class LegacyRequestMapping implements HandlerMapping {
         logger.info("Initialized Request Mapping!");
     }
 
-    public Controller findController(String url) {
-        return mappings.get(url);
-    }
-
     void put(String url, Controller controller) {
         mappings.put(url, controller);
     }
