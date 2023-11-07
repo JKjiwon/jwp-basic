@@ -1,8 +1,6 @@
 package core.mvc;
 
-import core.nmvc.AnnotationHandlerMapping;
-import core.nmvc.HandlerExecution;
-import core.nmvc.HandlerMapping;
+import core.nmvc.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +19,7 @@ public class DispatcherServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
     private List<HandlerMapping> mappings = new ArrayList<>();
+    private List<HandlerAdapter> handlerAdapters = new ArrayList<>();
 
     @Override
     public void init() throws ServletException {
@@ -32,6 +31,9 @@ public class DispatcherServlet extends HttpServlet {
 
         mappings.add(lrm);
         mappings.add(ahm);
+
+        handlerAdapters.add(new ControllerHandlerAdapter());
+        handlerAdapters.add(new HandlerExecutionHandlerAdapter());
     }
 
     @Override
@@ -52,10 +54,12 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     private ModelAndView execute(Object handler, HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        if (handler instanceof Controller) {
-            return ((Controller) handler).execute(req, resp);
+        for (HandlerAdapter handlerAdapter : handlerAdapters) {
+            if (handlerAdapter.supports(handler)) {
+                return handlerAdapter.handler(req, resp, handler);
+            }
         }
-        return ((HandlerExecution) handler).handle(req, resp);
+        throw new RuntimeException(handler + "를 지원하는 handlerAdapter가 없습니다.");
     }
 
     private Object getHandler(HttpServletRequest req) {
