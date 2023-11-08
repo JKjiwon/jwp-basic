@@ -12,8 +12,8 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import core.jdbc.ConnectionManager;
 
-public class AnswerDaoTest {
-    private static final Logger log = LoggerFactory.getLogger(AnswerDaoTest.class);
+public class JdbcAnswerDaoTest {
+    private static final Logger log = LoggerFactory.getLogger(JdbcAnswerDaoTest.class);
 
     @Before
     public void setup() {
@@ -26,7 +26,7 @@ public class AnswerDaoTest {
     public void addAnswer() throws Exception {
         long questionId = 1L;
         Answer expected = new Answer("javajigi", "answer contents", questionId);
-        AnswerDao dut = AnswerDao.getInstance();
+        AnswerDao dut = JdbcAnswerDao.getInstance();
         Answer answer = dut.insert(expected);
         log.debug("Answer : {}", answer);
     }
