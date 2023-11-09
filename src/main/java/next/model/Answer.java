@@ -25,6 +25,10 @@ public class Answer {
         this.questionId = questionId;
     }
 
+    public boolean canDelete(User user) {
+        return user.isSameUser(writer);
+    }
+
     public long getAnswerId() {
         return answerId;
     }
