@@ -1,5 +1,6 @@
-package next.dao;
+package next.service;
 
+import next.dao.QuestionDao;
 import next.model.Question;
 
 import java.lang.reflect.Field;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class MockQuestionDao implements QuestionDao {
 
     private Map<Long, Question> questions = new HashMap<>();
