@@ -20,24 +20,27 @@ public class QnaServiceTest {
     public void setUp() {
         questionDao = new MockQuestionDao();
         answerDao = new MockAnswerDao();
-        qnaService = QnaService.getInstance(questionDao, answerDao);
-
-        Question question = getQuestion(1L, "jiwon");
-        questionDao.insert(question);
+        qnaService = new QnaService(questionDao, answerDao);
     }
 
     @Test(expected = CannotDeleteException.class)
     public void deleteQuestion_없는_질문() throws Exception {
+        Question question = getQuestion(1L, "jiwon");
+        questionDao.insert(question);
         qnaService.deleteQuestion(1L, newUser("userId"));
     }
 
     @Test(expected = CannotDeleteException.class)
     public void deleteQuestion_다른_사용자() throws Exception {
+        Question question = getQuestion(1L, "jiwon");
+        questionDao.insert(question);
         qnaService.deleteQuestion(1L, newUser("userId"));
     }
 
     @Test
     public void deleteQuestion_같은_사용자_답변없음() throws Exception {
+        Question question = getQuestion(1L, "jiwon");
+        questionDao.insert(question);
         qnaService.deleteQuestion(1L, newUser("jiwon"));
     }
 

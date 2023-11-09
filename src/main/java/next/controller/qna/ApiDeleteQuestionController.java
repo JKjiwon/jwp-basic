@@ -1,19 +1,21 @@
 package next.controller.qna;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 import next.CannotDeleteException;
 import next.controller.UserSessionUtils;
-import next.dao.JdbcAnswerDao;
-import next.dao.JdbcQuestionDao;
 import next.model.Result;
 import next.service.QnaService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public class ApiDeleteQuestionController extends AbstractController {
-    private QnaService qnaService = QnaService.getInstance(JdbcQuestionDao.getInstance(), JdbcAnswerDao.getInstance());
+    private final QnaService qnaService;
+
+    public ApiDeleteQuestionController(QnaService qnaService) {
+        this.qnaService = qnaService;
+    }
 
     @Override
     public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {

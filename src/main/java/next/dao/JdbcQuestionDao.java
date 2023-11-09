@@ -1,31 +1,16 @@
 package next.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.List;
-
-import next.model.Question;
 import core.jdbc.JdbcTemplate;
 import core.jdbc.KeyHolder;
 import core.jdbc.PreparedStatementCreator;
 import core.jdbc.RowMapper;
+import next.model.Question;
+
+import java.sql.*;
+import java.util.List;
 
 public class JdbcQuestionDao implements QuestionDao {
-    private static QuestionDao questionDao;
     private JdbcTemplate jdbcTemplate = JdbcTemplate.getInstance();
-
-    private JdbcQuestionDao() {
-    }
-
-    public static QuestionDao getInstance() {
-        if (questionDao == null) {
-            questionDao = new JdbcQuestionDao();
-        }
-        return questionDao;
-    }
 
     @Override
     public Question insert(Question question) {
