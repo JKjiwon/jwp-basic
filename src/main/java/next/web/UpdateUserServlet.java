@@ -39,7 +39,7 @@ public class UpdateUserServlet extends HttpServlet {
             return;
         }
 
-        req.setAttribute("user", DataBase.findUserById(requestUserId));
+        req.setAttribute("users", DataBase.findUserById(requestUserId));
         RequestDispatcher rd = req.getRequestDispatcher("/user/update.jsp");
         rd.forward(req, resp);
     }
