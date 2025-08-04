@@ -1,6 +1,6 @@
-package next.web;
+package next.servlet;
 
-import next.model.User;
+import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,10 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 
-@WebServlet("/user/profile")
-public class UserProfileServlet extends HttpServlet {
+import core.db.DataBase;
+
+@WebServlet("/user/list")
+public class ListUserServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final String USER_SESSION_KEY = "user";
 
@@ -24,9 +25,8 @@ public class UserProfileServlet extends HttpServlet {
             resp.sendRedirect("/");
             return;
         }
-        User user = (User) value;
-        req.setAttribute("user", user);
-        RequestDispatcher rd = req.getRequestDispatcher("/user/profile.jsp");
+        req.setAttribute("users", DataBase.findAll());
+        RequestDispatcher rd = req.getRequestDispatcher("/user/list.jsp");
         rd.forward(req, resp);
     }
 }
