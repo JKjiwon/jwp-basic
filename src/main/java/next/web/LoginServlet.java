@@ -34,7 +34,7 @@ public class LoginServlet extends HttpServlet {
 
         User user = DataBase.findUserById(userId);
         if (user == null) {
-            resp.sendRedirect("/user/login_failed.html");
+            resp.sendRedirect("/user/login_failed.jsp");
             return;
         }
 
@@ -44,7 +44,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("user", user);
             resp.sendRedirect("/");
         } else {
-            resp.sendRedirect("/user/login_failed.html");
+            resp.sendRedirect("/user/login_failed.jsp");
         }
     }
 }
