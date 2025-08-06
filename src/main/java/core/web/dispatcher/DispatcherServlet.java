@@ -15,11 +15,18 @@ import java.io.IOException;
 public class DispatcherServlet extends HttpServlet {
     private static final long serialVersionUID = 1;
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
+    private RequestMapping requestMapping;
+
+    @Override
+    public void init() throws ServletException {
+        requestMapping = new RequestMapping();
+        requestMapping.init();
+    }
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            Controller controller = RequestMapping.getController(req.getRequestURI());
+            Controller controller = requestMapping.getController(req.getRequestURI());
             if (controller == null) {
                 throw new IllegalStateException("페이지를 찾을 수 없습니다.");
             }
