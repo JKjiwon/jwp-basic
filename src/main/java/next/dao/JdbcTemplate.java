@@ -9,15 +9,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class JdbcTemplate<T> {
+public class JdbcTemplate<T> {
 
-    public void update(String sql) throws SQLException {
+    public void update(String sql, PreparedStatementSetter pstmts) throws SQLException {
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
-            setValues(pstmt);
+            pstmts.setValues(pstmt);
             pstmt.executeUpdate();
         } finally {
             if (pstmt != null) {
@@ -30,7 +30,7 @@ public abstract class JdbcTemplate<T> {
         }
     }
 
-    public List<T> query(String sql) throws SQLException {
+    public List<T> query(String sql, PreparedStatementSetter pstmts, RowMapper<T> rm) throws SQLException {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -42,7 +42,7 @@ public abstract class JdbcTemplate<T> {
 
             T obj = null;
             while (rs.next()) {
-                obj = mapRow(rs);
+                obj = rm.mapRow(rs);
                 objs.add(obj);
             }
             return objs;
@@ -59,18 +59,18 @@ public abstract class JdbcTemplate<T> {
         }
     }
 
-    public T queryForObject(String sql) throws SQLException {
+    public T queryForObject(String sql, PreparedStatementSetter pstmts, RowMapper<T> rm) throws SQLException {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
-            setValues(pstmt);
+            pstmts.setValues(pstmt);
             rs = pstmt.executeQuery();
             T obj = null;
             while (rs.next()) {
-                obj = mapRow(rs);
+                obj = rm.mapRow(rs);
             }
 
             return obj;
@@ -86,8 +86,4 @@ public abstract class JdbcTemplate<T> {
             }
         }
     }
-
-    protected abstract T mapRow(ResultSet rs) throws SQLException;
-
-    protected abstract void setValues(PreparedStatement pstmt) throws SQLException;
 }
