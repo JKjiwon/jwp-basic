@@ -1,6 +1,4 @@
-package next.dao;
-
-import core.jdbc.ConnectionManager;
+package core.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,6 +36,9 @@ public class JdbcTemplate<T> {
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
+            if (pstmts != null) {
+                pstmts.setValues(pstmt);
+            }
             rs = pstmt.executeQuery();
 
             T obj = null;
