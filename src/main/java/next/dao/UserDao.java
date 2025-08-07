@@ -1,7 +1,6 @@
 package next.dao;
 
 import core.jdbc.JdbcTemplate;
-import core.jdbc.PreparedStatementSetter;
 import core.jdbc.RowMapper;
 import next.model.User;
 
@@ -26,14 +25,13 @@ public class UserDao {
         String sql = "SELECT userId, password, name, email FROM USERS";
         RowMapper<User> rm = rs -> new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
                 rs.getString("email"));
-        return jdbcTemplate.query(sql, null, rm);
+        return jdbcTemplate.query(sql, rm);
     }
 
     public User findByUserId(String userId) {
         String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
-        PreparedStatementSetter pstmts = pstmt -> pstmt.setString(1, userId);
         RowMapper<User> rm = rs -> new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
                 rs.getString("email"));
-        return jdbcTemplate.queryForObject(sql, pstmts, rm);
+        return jdbcTemplate.queryForObject(sql, rm, userId);
     }
 }

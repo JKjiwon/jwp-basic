@@ -28,7 +28,7 @@ public class JdbcTemplate<T> {
         }
     }
 
-    public List<T> query(String sql, PreparedStatementSetter pstmts, RowMapper<T> rm) {
+    public List<T> query(String sql, RowMapper<T> rm, PreparedStatementSetter pss) {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -36,9 +36,7 @@ public class JdbcTemplate<T> {
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
-            if (pstmts != null) {
-                pstmts.setValues(pstmt);
-            }
+            pss.setValues(pstmt);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -52,25 +50,24 @@ public class JdbcTemplate<T> {
         }
     }
 
-    public T queryForObject(String sql, PreparedStatementSetter pstmts, RowMapper<T> rm) {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            con = ConnectionManager.getConnection();
-            pstmt = con.prepareStatement(sql);
-            pstmts.setValues(pstmt);
-            rs = pstmt.executeQuery();
-            T obj = null;
-            while (rs.next()) {
-                obj = rm.mapRow(rs);
-            }
 
-            return obj;
-        } catch (SQLException e) {
-            throw new DataAccessException(e);
-        } finally {
-            closeAll(con, pstmt, rs);
+    public List<T> query(String sql, RowMapper<T> rm, Object... parameters) {
+        return query(sql, rm, createPreparedStatementSetter(parameters));
+    }
+
+    public T queryForObject(String sql, RowMapper<T> rm, Object... parameters) {
+        List<T> result = query(sql, rm, parameters);
+        if (result == null) {
+            return null;
         }
+        return result.get(0);
+    }
+
+    private PreparedStatementSetter createPreparedStatementSetter(Object[] parameters) {
+        return pstmt -> {
+            for (int i = 0; i < parameters.length; i++) {
+                pstmt.setObject(i + 1, parameters[i]);
+            }
+        };
     }
 }
