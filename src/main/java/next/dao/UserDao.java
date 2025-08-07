@@ -5,14 +5,13 @@ import core.jdbc.PreparedStatementSetter;
 import core.jdbc.RowMapper;
 import next.model.User;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class UserDao {
 
     private final JdbcTemplate<User> jdbcTemplate = new JdbcTemplate<>();
 
-    public void insert(User user) throws SQLException {
+    public void insert(User user) {
         PreparedStatementSetter pstmts = pstmt -> {
             pstmt.setString(1, user.getUserId());
             pstmt.setString(2, user.getPassword());
@@ -22,7 +21,7 @@ public class UserDao {
         jdbcTemplate.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", pstmts);
     }
 
-    public void update(User user) throws SQLException {
+    public void update(User user) {
         PreparedStatementSetter pstmts = pstmt -> {
             pstmt.setString(1, user.getPassword());
             pstmt.setString(2, user.getName());
@@ -33,13 +32,13 @@ public class UserDao {
     }
 
 
-    public List<User> findAll() throws SQLException {
+    public List<User> findAll() {
         RowMapper<User> rm = rs -> new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
                 rs.getString("email"));
         return jdbcTemplate.query("SELECT userId, password, name, email FROM USERS", null, rm);
     }
 
-    public User findByUserId(String userId) throws SQLException {
+    public User findByUserId(String userId) {
         PreparedStatementSetter pstmts = pstmt -> pstmt.setString(1, userId);
         RowMapper<User> rm = rs -> new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
                 rs.getString("email"));

@@ -7,9 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static core.jdbc.JdbcCloseUtil.closeAll;
+
 public class JdbcTemplate<T> {
 
-    public void update(String sql, PreparedStatementSetter pstmts) throws SQLException {
+    public void update(String sql, PreparedStatementSetter pstmts) {
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
@@ -17,18 +19,14 @@ public class JdbcTemplate<T> {
             pstmt = con.prepareStatement(sql);
             pstmts.setValues(pstmt);
             pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e);
         } finally {
-            if (pstmt != null) {
-                pstmt.close();
-            }
-
-            if (con != null) {
-                con.close();
-            }
+            closeAll(con, pstmt, null);
         }
     }
 
-    public List<T> query(String sql, PreparedStatementSetter pstmts, RowMapper<T> rm) throws SQLException {
+    public List<T> query(String sql, PreparedStatementSetter pstmts, RowMapper<T> rm) {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -47,20 +45,14 @@ public class JdbcTemplate<T> {
                 objs.add(obj);
             }
             return objs;
+        } catch (SQLException e) {
+            throw new DataAccessException(e);
         } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            if (con != null) {
-                con.close();
-            }
+            closeAll(con, pstmt, rs);
         }
     }
 
-    public T queryForObject(String sql, PreparedStatementSetter pstmts, RowMapper<T> rm) throws SQLException {
+    public T queryForObject(String sql, PreparedStatementSetter pstmts, RowMapper<T> rm) {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -75,16 +67,10 @@ public class JdbcTemplate<T> {
             }
 
             return obj;
+        } catch (SQLException e) {
+            throw new DataAccessException(e);
         } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            if (con != null) {
-                con.close();
-            }
+            closeAll(con, pstmt, rs);
         }
     }
 }
