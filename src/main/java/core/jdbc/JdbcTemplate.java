@@ -11,13 +11,15 @@ import static core.jdbc.JdbcCloseUtil.closeAll;
 
 public class JdbcTemplate<T> {
 
-    public void update(String sql, PreparedStatementSetter pstmts) {
+    public void update(String sql, Object... paramters) {
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmts.setValues(pstmt);
+            for (int i = 0; i < paramters.length; i++) {
+                pstmt.setObject(i + 1, paramters[i]);
+            }
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException(e);

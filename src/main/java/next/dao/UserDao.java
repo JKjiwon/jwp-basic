@@ -12,23 +12,11 @@ public class UserDao {
     private final JdbcTemplate<User> jdbcTemplate = new JdbcTemplate<>();
 
     public void insert(User user) {
-        PreparedStatementSetter pstmts = pstmt -> {
-            pstmt.setString(1, user.getUserId());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setString(4, user.getEmail());
-        };
-        jdbcTemplate.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", pstmts);
+        jdbcTemplate.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
     }
 
     public void update(User user) {
-        PreparedStatementSetter pstmts = pstmt -> {
-            pstmt.setString(1, user.getPassword());
-            pstmt.setString(2, user.getName());
-            pstmt.setString(3, user.getEmail());
-            pstmt.setString(4, user.getUserId());
-        };
-        jdbcTemplate.update("UPDATE USERS SET password=?, name=?, email=? WHERE userId=?", pstmts);
+        jdbcTemplate.update("UPDATE USERS SET password=?, name=?, email=? WHERE userId=?", user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
     }
 
 
