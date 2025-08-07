@@ -32,7 +32,7 @@ public class JdbcTemplate<T> {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        List<T> objs = new ArrayList<>();
+        List<T> list = new ArrayList<>();
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
@@ -41,12 +41,10 @@ public class JdbcTemplate<T> {
             }
             rs = pstmt.executeQuery();
 
-            T obj = null;
             while (rs.next()) {
-                obj = rm.mapRow(rs);
-                objs.add(obj);
+                list.add(rm.mapRow(rs));
             }
-            return objs;
+            return list;
         } catch (SQLException e) {
             throw new DataAccessException(e);
         } finally {
